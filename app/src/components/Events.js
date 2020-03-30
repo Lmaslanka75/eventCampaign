@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 import Pagination from '../components/Pagination';
+import DemoApp from './Maps';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -92,6 +93,8 @@ export default function Events() {
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
+    const [locations, setLocations] = useState();
+
     // Change page
     const paginate = pageNumber => setCurrentPage(pageNumber);
 
@@ -101,7 +104,24 @@ export default function Events() {
             [id]: !expanded[id]
         });
     }
+    function getLocations() {
+        posts.forEach(item => {
+            try {
+                let array = [];
+                if (item.location.location) {
+                    return array.push(item.location.location);
+                }
+                else {
+                    return;
+                }
+                setLocations(array);
+            }
+            catch (error) {
+                console.log(error);
+            }
+        });
 
+    }
 
     useEffect(
         () => {
@@ -113,17 +133,23 @@ export default function Events() {
                     const json = await response.json();
                     setPosts(json.data); //Set the events data from the json
                     setResults(json);   //use the entire response to get "next", and "count"
+
+
                 } finally {
                     setLoading(false);
                 }
             }
-            fetchData();
+            const places = getLocations(posts);
+            fetchData(); setLocations(places);
         }, []);
+
 
 
     return (
         <>
             <Container >
+                <DemoApp markers={getLocations({ posts })}></DemoApp>
+
                 <div className={classes.columns}>
                     {/* Map the allocated events per page (currentPosts =  events perPage limit) */}
                     {currentPosts.map((item) => (
@@ -143,7 +169,7 @@ export default function Events() {
                                 </Typography>
 
                                 {/* Showing all of the Dates available did not look good, so I chose 1 date */}
-                                <Typography variant="overline text" component="p" variant="subtitle">
+                                <Typography variant="overline text" component="p" variant="p">
                                     {new Date((item.timeslots[item.timeslots.length - 1].start_date) * 1000).toUTCString()}
                                 </Typography>
                             </CardContent>
@@ -186,6 +212,7 @@ export default function Events() {
                 totalPosts={posts.length}
                 paginate={paginate}
             />
+
 
         </>
 
