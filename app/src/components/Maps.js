@@ -11,6 +11,26 @@ const {
 } = require("react-google-maps");
 const { MarkerClusterer } = require("react-google-maps/lib/components/addons/MarkerClusterer");
 
+//get end user's current location
+export function getUsersCurrentLocation() {
+    if (navigator.geolocation) { //check if geolocation is available
+
+        navigator.geolocation.getCurrentPosition(function (position) {
+            const userLatitude = position.coords.latitude;
+            const userLongitude = position.coords.longitude;
+            const geo = { userLatitude, userLongitude };
+            const personLocation = JSON.stringify(geo);
+            localStorage.setItem('coordinates', JSON.stringify(personLocation));
+            localStorage.setItem('userLatitude', userLatitude);
+            localStorage.setItem('userLongitude', userLongitude);
+        });
+    }
+
+}
+export const userlat = localStorage.getItem('userLatitude');
+export const userlong = localStorage.getItem('userLongitude');
+
+
 const MapWithAMarkerClusterer = compose(
     withProps({
         googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyCmJcHTEJg-k78nyc2GqH050YS2jtSlI8U&v=3.exp&libraries=geometry,drawing,places",
@@ -25,12 +45,14 @@ const MapWithAMarkerClusterer = compose(
             console.log(clickedMarkers)
         },
     }),
+
     withScriptjs,
     withGoogleMap
 )(props =>
     <GoogleMap
         defaultZoom={3}
-        defaultCenter={{ lat: 25.0391667, lng: 121.525 }}
+        defaultCenter={{ lat: -34.397, lng: 150.644 }}
+    // defaultCenter={{ lat: userlat, lng: userlong }}
     >
         <MarkerClusterer
             onClick={props.onMarkerClustererClick}
@@ -45,7 +67,7 @@ const MapWithAMarkerClusterer = compose(
                 />
             ))}
         </MarkerClusterer>
-    </GoogleMap>
+    </GoogleMap >
 );
 
 class DemoApp extends React.PureComponent {
@@ -66,6 +88,10 @@ class DemoApp extends React.PureComponent {
             .then(data => {
                 this.setState({ markers: data.photos });
             });
+
+
+
+
     }
 
     render() {

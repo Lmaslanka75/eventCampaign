@@ -29,6 +29,11 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### `yarn eject`
 
+## My Notes on this project
+
+I tried to get Google Maps working, though I've never worked with it before today, and during my last commit, the map stopped working and I didn't want to go over time! Thank you for your consideration!!
+
+<br />
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
 If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.

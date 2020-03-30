@@ -104,24 +104,6 @@ export default function Events() {
             [id]: !expanded[id]
         });
     }
-    function getLocations() {
-        posts.forEach(item => {
-            try {
-                let array = [];
-                if (item.location.location) {
-                    return array.push(item.location.location);
-                }
-                else {
-                    return;
-                }
-                setLocations(array);
-            }
-            catch (error) {
-                console.log(error);
-            }
-        });
-
-    }
 
     useEffect(
         () => {
@@ -133,22 +115,42 @@ export default function Events() {
                     const json = await response.json();
                     setPosts(json.data); //Set the events data from the json
                     setResults(json);   //use the entire response to get "next", and "count"
-
+                    // const places = getLocations(json.data);
+                    // setLocations(places);
 
                 } finally {
                     setLoading(false);
                 }
             }
-            const places = getLocations(posts);
-            fetchData(); setLocations(places);
+
+            fetchData();
         }, []);
 
-
+    // const getLocations = () => {
+    //     posts.map(item => {
+    //         try {
+    //             let array = [];
+    //             if (item.location.location) {
+    //                 return array.push(item.location.location);
+    //             }
+    //             else {
+    //                 return;
+    //             }
+    //             return setLocations(array);
+    //         }
+    //         catch (error) {
+    //             console.log(error);
+    //         }
+    //         return;
+    //     }
+    //     );
+    // }
 
     return (
         <>
             <Container >
-                <DemoApp markers={getLocations({ posts })}></DemoApp>
+                {/* Google Map */}
+                {/* <DemoApp markers={locations}></DemoApp> */}
 
                 <div className={classes.columns}>
                     {/* Map the allocated events per page (currentPosts =  events perPage limit) */}
@@ -169,7 +171,7 @@ export default function Events() {
                                 </Typography>
 
                                 {/* Showing all of the Dates available did not look good, so I chose 1 date */}
-                                <Typography variant="overline text" component="p" variant="p">
+                                <Typography variant="overline text" component="p" variant="subtitle2">
                                     {new Date((item.timeslots[item.timeslots.length - 1].start_date) * 1000).toUTCString()}
                                 </Typography>
                             </CardContent>
